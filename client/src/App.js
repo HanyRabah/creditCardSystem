@@ -39,6 +39,12 @@ const Form = styled.div`
   margin-bottom: 24px;
 `;
 
+
+const Error = styled.div`
+  color: red;
+  margin-bottom: 12px;
+`;
+
 const Formgroup = styled.div`
   margin-bottom: 1rem;
   label {
@@ -84,7 +90,7 @@ const Button = styled.button`
 `;
 
 
-const apiUrl = 'http://localhost:3000/api/v1/users/';
+const apiUrl = 'http://localhost:3000/api/v1/cards/';
 
 function App() {
   // initialize our state
@@ -92,13 +98,14 @@ function App() {
   const [name, setName] = useState();
   const [cardNumber, setCardNumber] = useState();
   const [cardLimit, setCardLimit] = useState();
+  const [formError, setFormError] = useState();
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       const response = await axios(apiUrl);
       setData(response.data.data);
     }
-
     fetchData();
   }, []);
 
@@ -110,7 +117,8 @@ function App() {
         limit: cardLimit
       })
       .catch(function (error) {
-        console.log(error.response.data.description);
+        setIsError(true);
+        setFormError(error.response.data.description)
       });
   }
 
@@ -126,27 +134,23 @@ function App() {
           <Input
             type="text"
             onChange={e => setName( e.target.value )}
-            placeholder="Credit card holder name"
-            style={{ width: '200px' }}
-          />
+            />
         </Formgroup>
         <Formgroup>
           <label>Card Number</label>
             <Input
             type="number"
             onChange={e => setCardNumber( e.target.value )}
-            placeholder="Credit card Number"
-            style={{ width: '200px' }} />
+            />
         </Formgroup>
         <Formgroup>
-          <label>Card Number</label>
+          <label>Card Limit</label>
             <Input
             type="number"
             onChange={e => setCardLimit( e.target.value )}
-            placeholder="Credit card limit"
-            style={{ width: '200px' }}
           />
         </Formgroup>
+        {isError && <Error>{ formError }</Error> }
         <Button onClick={() => addCardData()}>
           ADD
         </Button>

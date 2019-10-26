@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
-var User = new Schema({
+var Card = new Schema({
     name: {
         type: String,
         required : [ true, 'name is required'],
@@ -23,4 +23,4 @@ var User = new Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('User', User);
+module.exports = mongoose.model('Card', Card);

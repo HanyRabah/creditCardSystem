@@ -1,21 +1,21 @@
 const express = require('express');
-const User = require('../../models/user');
+const Card = require('../../models/cards');
 
 const getCards = async (req, res, next) => {
     try {
 
-        let users = await User.find({});
+        let cards = await Card.find({});
 
-        if (users.length > 0) {
+        if (cards.length > 0) {
             return res.status(200).json({
-                'message': 'users fetched successfully',
-                'data': users
+                'message': 'Cards fetched successfully',
+                'data': cards
             });
         }
 
         return res.status(404).json({
             'code': 'BAD_REQUEST_ERROR',
-            'description': 'No users found in the system'
+            'description': 'No Cards found in the system'
         });
     } catch (error) {
         return res.status(500).json({
@@ -37,7 +37,7 @@ const createCard = async (req, res, next) => {
         if (name === undefined || name === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
-                'description': 'name is required',
+                'description': 'Name Field is required',
                 'field': 'name'
             });
         }
@@ -45,22 +45,12 @@ const createCard = async (req, res, next) => {
         if (cardNumber === undefined || cardNumber === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
-                'description': 'Card number is required',
+                'description': 'Card Number is required',
                 'field': 'cardNumber'
             });
         }
 
-        console.log("TCL: createCard -> valid_credit_card(cardNumber)", valid_credit_card(cardNumber))
-        if (!valid_credit_card(cardNumber)) {
-            return res.status(422).json({
-                'code': 'UNVALID_INPUT',
-                'description': 'Unvalid card number',
-                'field': 'cardNumber'
-            });
-        }
-
-
-        let isCardNumberExists = await User.findOne({
+        let isCardNumberExists = await Card.findOne({
             "cardNumber": cardNumber
         });
 
@@ -70,6 +60,22 @@ const createCard = async (req, res, next) => {
                 'description': 'Card Number already exists',
                 'field': 'cardNumber'
             });
+        }        
+
+        if (!LuhanCheck(cardNumber)) {
+            return res.status(422).json({
+                'code': 'UNVALID_INPUT',
+                'description': 'Unvalid Card number',
+                'field': 'cardNumber'
+            });
+        }
+
+        if (limit === undefined || limit === '') {
+            return res.status(422).json({
+                'code': 'REQUIRED_FIELD_MISSING',
+                'description': 'Limit Field is required',
+                'field': 'limit'
+            });
         }
 
         const temp = {
@@ -77,45 +83,31 @@ const createCard = async (req, res, next) => {
             cardNumber: cardNumber,
             limit: limit
         }
-        console.log("TCL: createUser -> temp", temp)
 
-        let newUser = await User.create(temp);
+        let newCard = await Card.create(temp);
 
-        if (newUser) {
+        if (newCard) {
             return res.status(201).json({
-                'message': 'user created successfully',
-                'data': newUser
+                'message': 'card created successfully',
+                'data': newCard
             });
         } else {
-            throw new Error('something went worng');
+            throw new Error('something went wrong');
         }
     } catch (error) {
         return res.status(500).json({
             'code': 'SERVER_ERROR',
-            'description': 'something went wrong while creating user, Please try again' + error
+            'description': 'something went wrong while creating card, Please try again' + error
         });
     }
 }
 
-function valid_credit_card(value) {
-    // Accept only digits, dashes or spaces
-    if (/[^0-9-\s]+/.test(value)) return false;
-
-    // Luhn 10 Algorithm.
-    let nCheck = 0, bEven = false;
-    value = value.replace(/\D/g, "");
-
-    for (var n = value.length - 1; n >= 0; n--) {
-        var cDigit = value.charAt(n),
-            nDigit = parseInt(cDigit, 10);
-
-        if (bEven && (nDigit *= 2) > 9) nDigit -= 9;
-
-        nCheck += nDigit;
-        bEven = !bEven;
-    }
-
-    return (nCheck % 10) == 0;
+const LuhanCheck = num => {
+    let Arr = (num + '').split('').reverse().map(n => parseInt(n));
+    let lastChar = Arr.splice(0, 1)[0];
+    let total = Arr.reduce((acc, val, i) => (i % 2 !== 0 ? acc + val : acc + ((val * 2) % 9) || 9), 0);
+    total += lastChar;
+    return total % 10 === 0;
 }
 
 module.exports = {
