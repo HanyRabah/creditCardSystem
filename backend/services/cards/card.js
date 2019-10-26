@@ -27,11 +27,10 @@ const getCards = async (req, res, next) => {
 
 const createCard = async (req, res, next) => {
     try {
-
         const {
             name,
             cardNumber,
-            limit,
+            cardLimit,
         } = req.body;
 
         if (name === undefined || name === '') {
@@ -70,18 +69,18 @@ const createCard = async (req, res, next) => {
             });
         }
 
-        if (limit === undefined || limit === '') {
+        if (cardLimit === undefined || cardLimit === '') {
             return res.status(422).json({
                 'code': 'REQUIRED_FIELD_MISSING',
                 'description': 'Limit Field is required',
-                'field': 'limit'
+                'field': 'cardLimit'
             });
         }
 
         const temp = {
             name: name,
             cardNumber: cardNumber,
-            limit: limit
+            cardLimit: cardLimit
         }
 
         let newCard = await Card.create(temp);

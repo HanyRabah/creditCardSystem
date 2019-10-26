@@ -34,6 +34,6 @@ to run tests
 npm test
 ```
 
-Tests running on Backend will test Api 
-Tests running on Client will test 
+Tests running on Backend will test Api Schema. 
+
 

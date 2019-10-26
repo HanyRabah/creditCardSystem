@@ -4,16 +4,16 @@ let Schema = mongoose.Schema;
 var Card = new Schema({
     name: {
         type: String,
-        required : [ true, 'name is required'],
+        required : [ true, 'Name is required'],
     },
     cardNumber: {
         type: Number,
-        required : [ true, 'card number is required'],
+        required : [ true, 'Card number is required'],
         unique : true,
     },
-    limit: {
+    cardLimit: {
         type: Number,
-        required : [ true, 'limit is required'],
+        required : [ true, 'Card limit is required'],
     },
     balance: {
         type: Number,

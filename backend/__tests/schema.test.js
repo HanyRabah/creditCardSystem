@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const CardModel = require('../models/cards');
-const cardData = { name: 'John', cardNumber: 4242424242424242, limit: 1000};
+const cardData = { name: 'John', cardNumber: 4242424242424242, cardLimit: 1000};
 
 describe('Card Model Test', () => {
 
@@ -29,12 +29,12 @@ describe('Card Model Test', () => {
         expect(savedCard._id).toBeDefined();
         expect(savedCard.name).toBe(cardData.name);
         expect(savedCard.cardNumber).toBe(cardData.cardNumber);
-        expect(savedCard.limit).toBe(cardData.limit);
+        expect(savedCard.cardLimit).toBe(cardData.cardLimit);
         expect(savedCard.balance).toBe(0);
     });
 
     it('insert card successfully, if field does not defined in schema should be undefined', async () => {
-        const cardWithInvalidField = new CardModel({ name: 'John', cardNumber: 4242424252525252, limit: 1000 });
+        const cardWithInvalidField = new CardModel({ name: 'John', cardNumber: 4242424252525252, cardLimit: 1000 });
         const savedCardWithInvalidField = await cardWithInvalidField.save();
         expect(savedCardWithInvalidField._id).toBeDefined();
         expect(savedCardWithInvalidField.cardNumber).toBeDefined();
@@ -52,7 +52,7 @@ describe('Card Model Test', () => {
         }
         expect(err).toBeInstanceOf(mongoose.Error.ValidationError)
         expect(err.errors.cardNumber).toBeDefined();
-        expect(err.errors.limit).toBeDefined();
+        expect(err.errors.cardLimit).toBeDefined();
     });
     
 })
