@@ -15,7 +15,7 @@
   "author": "Hany Rabah",
   "dependencies": {
     "antd": "3.24.2",
-    "axios": "0.19.0",
+    "axios": "0.21.1",
     "bootstrap-styled": "2.5.3",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
